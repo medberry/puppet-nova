@@ -43,6 +43,10 @@
 #   Required to use cephx.
 #   Default to false.
 #
+# [*live_migration_flag*]
+#   (optional) This controls how live migration works.
+#   The default does NOT allow live migration.
+#
 
 class nova::compute::rbd (
   $libvirt_rbd_user,
@@ -50,6 +54,7 @@ class nova::compute::rbd (
   $libvirt_images_rbd_pool      = 'rbd',
   $libvirt_images_rbd_ceph_conf = '/etc/ceph/ceph.conf',
   $rbd_keyring                  = 'client.nova',
+  $live_migration_flag          = undef,
 ) {
 
   include nova::params
@@ -59,6 +64,12 @@ class nova::compute::rbd (
     'DEFAULT/libvirt_images_rbd_pool':      value => $libvirt_images_rbd_pool;
     'DEFAULT/libvirt_images_rbd_ceph_conf': value => $libvirt_images_rbd_ceph_conf;
     'DEFAULT/rbd_user':                     value => $libvirt_rbd_user;
+  }
+
+  if $live_migration_flag {
+    nova_config {
+      'DEFAULT/live_migration_flag':          value => $live_migration_flag;
+    }
   }
 
   if $libvirt_rbd_secret_uuid {
