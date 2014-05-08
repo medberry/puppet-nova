@@ -31,6 +31,7 @@ describe 'nova' do
         'ensure'  => 'present',
         'gid'     => 'nova',
         'system'  => true,
+        'shell'   => '/bin/false',
         'require' => 'Package[nova-common]'
     ) }
 
@@ -104,6 +105,7 @@ describe 'nova' do
           'ensure_package'           => '2012.1.1-15.el6',
           'monitoring_notifications' => true,
           'install_utilities'        => false,
+          'nova_shell'               => '/bin/bash',
         }
       end
 
@@ -134,6 +136,13 @@ describe 'nova' do
       it 'does not install utilities' do
         should_not contain_class('nova::utilities')
       end
+      it { should contain_user('nova').with(
+          'ensure'  => 'present',
+          'gid'     => 'nova',
+          'system'  => true,
+          'shell'   => '/bin/bash',
+          'require' => 'Package[nova-common]'
+      ) }
     end
 
     describe 'with deprecated sql parameters' do
